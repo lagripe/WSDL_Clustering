@@ -1,7 +1,8 @@
 import operator
 import re
 from zeep import Client
-import nltk.stem.wordnet as stm
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords as st
 import zeep.wsdl.wsdl as parser
 def getCamelFormat(sentence):
         return re.findall(r'[A-Z]+[a-z]+',re.sub(r'.*?}','', str(sentence).strip())) +  re.findall(r'^[a-z]+',re.sub(r'.*?}','', str(sentence).strip()))
@@ -62,14 +63,15 @@ def PreprocessWSDL(wsdl):
                         output = output + splittedWord
                 else:
                         output.append(word)
-        # stop words Eliminate 
-        stopwords = ["in", "no", "soap", "http", "post", "get", "update", "servers", "of", "response", "to", "string",'out','as','set','type','request','requests','is','they','are','it','href','the','an','or','and','nor','has','for','a','https','if','else','on','web','service']
-        ServiceName = [str(entity).lower() for entity in ServiceName.split(' ') if str(entity).lower() not in stopwords and len(str(entity).lower()) > 2 ]
-        portTypes = [str(entity).lower() for entity in portTypes if str(entity).lower() not in stopwords and len(str(entity).lower()) > 2 ]
-        complexTypes = [str(entity).lower() for entity in complexTypes if str(entity).lower() not in stopwords and len(str(entity).lower()) > 2]
-        Messages = [str(entity).lower() for entity in Messages if str(entity).lower() not in stopwords and len(str(entity).lower()) > 2]
-        output = [str(entity).lower() for entity in output if str(entity).lower() not in stopwords and len(str(entity).lower()) > 2]
-
+        # stop words Eliminate
+        Lemmatizer = WordNetLemmatizer()
+        stopwords = list(st.words('english')) + ["in", "no", "soap", "http", "post", "get", "update", "servers", "of", "response", "to", "string",'out','as','set','type','request','requests','is','they','are','it','href','the','an','or','and','nor','has','for','a','https','if','else','on','web','service']
+        ServiceName = [Lemmatizer.lemmatize(str(entity).lower(),pos='v') for entity in ServiceName.split(' ') if str(entity).lower() not in stopwords and len(str(entity).lower()) > 2 ]
+        portTypes = [Lemmatizer.lemmatize(str(entity).lower(),pos='v') for entity in portTypes if str(entity).lower() not in stopwords and len(str(entity).lower()) > 2 ]
+        complexTypes = [Lemmatizer.lemmatize(str(entity).lower(),pos='v') for entity in complexTypes if str(entity).lower() not in stopwords and len(str(entity).lower()) > 2]
+        Messages = [Lemmatizer.lemmatize(str(entity).lower(),pos='v') for entity in Messages if str(entity).lower() not in stopwords and len(str(entity).lower()) > 2]
+        output = [Lemmatizer.lemmatize(str(entity).lower(),pos='v') for entity in output if str(entity).lower() not in stopwords and len(str(entity).lower()) > 2]
+        print (ServiceName)
         return {'Name':list(set(ServiceName)),
                 'Messages':list(set(Messages)),
                 'Types':list(set(complexTypes)),
