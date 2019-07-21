@@ -21,10 +21,12 @@ def MatchWSDLAttributes(WS1,WS2):
         if word in WS2['Types']:
             countTypes+=1
 
-
-    return {'matchMsg':countMsg/avgMsg,
-            'matchPorts':countPorts/avgPort,
-            'matchTypes':countTypes/avgType
+    matchMsg = countMsg/avgMsg if  avgMsg > 0  else 0
+    matchPorts = countPorts/avgPort if  avgPort > 0  else 0
+    matchTypes = countTypes/avgType if  avgType > 0  else 0
+    return {'matchMsg':matchMsg,
+            'matchPorts':matchPorts,
+            'matchTypes':matchTypes
             }
 def ServiceNameSimilarity(WS1,WS2):
     count = 0

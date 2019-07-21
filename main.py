@@ -1,4 +1,4 @@
-from ClustersGeneration import ClusteringData
+from ClustersGeneration import Cluster
 coef = 0.2
-dir = 'clearedDatabase'
-ClusteringData(dir,coef)
+dir = 'test'
+Cluster(dir,coef)
